@@ -58,6 +58,7 @@ function downsong() {
     songid=$(echo "$page" | grep -v "small" | grep -oE "data-sc-track=.[0-9]*" | grep -oE "[0-9].*" | sort | uniq)
 
     songinfo=$(CURL "http://api.soundcloud.com/tracks/$songid.json?client_id=$clientID" | tr "," "\n")
+    echo "http://api.soundcloud.com/tracks/$songid.json?client_id=$clientID"
     title=$(echo -e "$songinfo" | grep '"title"' | cut -d '"' -f 4 |  tr -d "\n" )
     filename=$(echo -e "$title".mp3 | tr '*/\?"<>|' '+       ' )
     songurl=$(echo -e "$songinfo" | grep "stream_url" | cut -d '"' -f 4)
