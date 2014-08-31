@@ -34,16 +34,27 @@ function config() {
 }
 
 function settags() {
-    artist=$1
-    title=$2
-    filename=$3
-    genre=$4
-    imageurl=$5
-    album=$6
+    local artist=$1
+    local title=$2
+    local filename=$3
+    local genre=$4
+    local imageurl=$5
+    local album=$6
+
     curl -s -L --user-agent 'Mozilla/5.0' "$imageurl" -o "/tmp/1.jpg"
+
     if [ "$writags" = "1" ] ; then
         eyeD3 --remove-all "$filename" &>/dev/null
-        eyeD3 --add-image="/tmp/1.jpg:ILLUSTRATION" --add-image="/tmp/1.jpg:OTHER" --add-image="/tmp/1.jpg:MEDIA" --add-image="/tmp/1.jpg:ICON" --add-image="/tmp/1.jpg:MEDIA" --add-image="/tmp/1.jpg:OTHER_ICON" --add-image="/tmp/1.jpg:FRONT_COVER" -a "$artist" -Y $(date +%Y) -G "$genre" -t "$title" -A "$album" -2 "$filename" &>/dev/null
+        eyeD3 --add-image="/tmp/1.jpg:ILLUSTRATION" \
+            --add-image="/tmp/1.jpg:OTHER" \
+            --add-image="/tmp/1.jpg:MEDIA" \
+            --add-image="/tmp/1.jpg:ICON" \
+            --add-image="/tmp/1.jpg:MEDIA" \
+            --add-image="/tmp/1.jpg:OTHER_ICON" \
+            --add-image="/tmp/1.jpg:FRONT_COVER" \
+            --artist="$artist" --year=$(date +%Y) --genre="$genre" \
+            --title="$title" --album="$album" --v2 "$filename" &>/dev/null
+
         echo '[i] Setting tags finished!'
     else
         echo "[i] Setting tags skipped (please install eyeD3)"
@@ -83,7 +94,7 @@ function downlike() {
     echo "[i] Grabbing artist's likes page"
     page=$(CURL $likeurl)
     clientID=$(echo "$page" | grep "clientID" | tr "," "\n" | grep "clientID" | cut -d '"' -f 4)
-    artistID=$(CURL "http://api.soundcloud.com/resolve.json?url=$likeurl&client_id=$clientID" | grep -Po '(?<=/)[0-9]*(?=\.json)')
+    artistID=$(CURL "http://api.soundcloud.com/resolve.json?url=$likeurl&client_id=$clientID" | grep -oE "([0-9])+\." | tr -d ".")
 
     offset=0
     stilllikessongs=1
@@ -109,7 +120,7 @@ function downallsongs() {
     echo "[i] Grabbing artists page"
     page=$(CURL $url)
     clientID=$(echo "$page" | grep "clientID" | tr "," "\n" | grep "clientID" | cut -d '"' -f 4)
-    artistID=$(CURL "http://api.soundcloud.com/resolve.json?url=$url&client_id=$clientID" | grep -Po '(?<=/)[0-9]*(?=\.json)')
+    artistID=$(CURL "http://api.soundcloud.com/resolve.json?url=$url&client_id=$clientID" | grep -oE "([0-9])+\." | tr -d ".")
 
     offset=0
     stillsongs=1
@@ -179,7 +190,7 @@ function downallsets() {
     echo "[i] Grabbing artist's set page"
     page=$(CURL $seturl)
     clientID=$(echo "$page" | grep "clientID" | tr "," "\n" | grep "clientID" | cut -d '"' -f 4)
-    artistID=$(CURL "http://api.soundcloud.com/resolve.json?url=$seturl&client_id=$clientID" | grep -Po '(?<=/)[0-9]*(?=\.json)')
+    artistID=$(CURL "http://api.soundcloud.com/resolve.json?url=$seturl&client_id=$clientID" | grep -oE "([0-9])+\." | tr -d ".")
 
     offset=0
     stilllikessongs=1

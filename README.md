@@ -27,7 +27,6 @@ It should work with OS X, any Linux OS.
 3. You can use the auto installer : `./install` (Support Debian/arch)
 4. Type `scdl {URL} {OPTION}`
 
-* MAC users --> https://github.com/lukapusic/soundcloud-dl/issues/56#issuecomment-48887229
 * MORE : For help type `scdl -h` or `scdl -help` or `scdl`
 
 ##OPTIONS available
