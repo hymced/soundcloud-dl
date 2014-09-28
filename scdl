@@ -53,16 +53,16 @@ function fromjsontomp3 { # use the json to download info and mp3
     clientID="$2"
     songID="$1"
     [[ "$debug" == '1' ]] && echo "https://api.soundcloud.com/tracks/$songID.json?client_id=$clientID"
-    songinfo=$(CURL "https://api.soundcloud.com/tracks/$songID.json?client_id=$clientID" | sed 's/\",\"/\"\'$'\n\"/g')
-    title=$(printf "%s\n" "$songinfo" | grep '"title"' | cut -c 10- | rev | cut -c 2- | rev | tr '\/:*?|<>' '________' )
+    songinfo=$(CURL "https://api.soundcloud.com/tracks/$songID.json?client_id=$clientID" | sed 's/\"},\"/\'$'\n\"/g' | sed 's/\",\"/\"\'$'\n\"/g')
+    title=$(printf "%s\n" "$songinfo" | grep '"title"' | cut -c 10- | rev | cut -c 2- | rev | tr '\\/:*?|<>' '__\-_____' )
     filename=$(printf "%s\n" "$title.mp3")
     songurl=$(echo -e "$songinfo" | grep "stream_url" | cut -d '"' -f 4)
     realsongurl=$(echo -e "$songurl?client_id=$clientID")
     artist=$(echo -e "$songinfo" | grep "username" | cut -d '"' -f 4)
     imageurl=$(echo -e "$songinfo" | grep "artwork_url" | cut -d '"' -f 4 | sed 's/large/t500x500/g')
-    genre=$(echo -e "$songinfo" | grep "genre" | cut -d '"' -f 4)
+    genre=$(echo -e "$songinfo" | grep "genre" | rev | cut -d '"' -f 2 | rev)
     songpermalink=$(echo -e "$songinfo" | grep -m2 "permalink_url" | tail -n1 | cut -d '"' -f 4)
-	[[ "$debug" == '1' ]] && echo "[i] Track permalink_url : $songpermalink"
+	[[ "$debug" == '1' ]] && echo "[i] Track permalink-url : $songpermalink"
 
     if [ -e "$filename" ]; then
         echo "[!] The song $filename has already been downloaded..."  && $cont
