@@ -4,6 +4,10 @@
 # Share it if you like ;)
 ##############################################################
 
+eyeD3version=$(eyeD3 --version  2>&1 | grep -m1 eye | cut -d " " -f -2)
+# 2>&1 is used because the way the Python cli eyeD3 is coded the result of `eyeD3 --version`
+# is in stderr instead of stdout
+
 echo ' *---------------------------------------------------------------------------*'
 echo '|               SoundcloudMusicDownloader           |   FlyinGrub rework      |'
 echo ' *---------------------------------------------------------------------------*'
@@ -300,6 +304,7 @@ function check_sys() { # Check system for curl & eyed3
     command -v curl &>/dev/null || { echo "[!] cURL needs to be installed in order to run the script."; echo "[!] The script will exit..."; exit 1; }
     command -v eyeD3 &>/dev/null || { echo "[!] eyeD3 needs to be installed to write tags into mp3 file."; echo "[!] The script will skip this part..."; writags=0; }
     [[ "$debug" == '1' ]] && echo "[i] Using" `curl -V` | cut -c-21
+    [[ "$debug" == '1' ]] && echo "[i] Using $eyeD3version"
 }
 
 # Launch function
